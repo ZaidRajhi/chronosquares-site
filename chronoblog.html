@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChronoBlog - Insights on Automation & Workflows</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: #0f1419;
+            --foreground: #f5f5f5;
+            --card: #1a1f25;
+            --card-foreground: #f5f5f5;
+            --primary: #7ba88f;
+            --primary-foreground: #0f1419;
+            --secondary: #a8d5b8;
+            --secondary-foreground: #0f1419;
+            --muted: #4d5a54;
+            --muted-foreground: #a6a6a6;
+            --border: #333a3f;
+            --input: #242c33;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: 'IBM Plex Sans', sans-serif;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: clamp(1.75rem, 6vw, 2.5rem);
+            line-height: 1.2;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+        }
+
+        /* Header & Nav */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(28, 28, 28, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hero-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-box {
+            width: 40px;
+            height: 40px;
+            background: rgba(122, 184, 143, 0.2);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: none;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+            }
+        }
+
+        .nav-links a {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 6px;
+            background: none;
+            border: none;
+            padding: 0.5rem;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background-color: var(--foreground);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(10px, 10px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        @media (max-width: 767px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background-color: rgba(28, 28, 28, 0.98);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                gap: 1rem;
+                padding: 2rem 1.5rem;
+                border-bottom: 1px solid var(--border);
+                display: none !important;
+                max-height: 0;
+                overflow: hidden;
+            }
+
+            .nav-links.active {
+                display: flex !important;
+                max-height: 500px;
+            }
+        }
+
+        main {
+            min-height: 100vh;
+        }
+
+        section {
+            padding: 5rem 1rem;
+        }
+
+        @media (min-width: 768px) {
+            section {
+                padding: 6rem 1.5rem;
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) translateX(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) translateX(0);
+            }
+        }
+
+        @keyframes abstractBlob {
+            0% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+                transform: rotate(0deg) scale(1);
+            }
+            50% {
+                border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+                transform: rotate(180deg) scale(1.05);
+            }
+            100% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            filter: blur(40px);
+        }
+
+        .blob-1 {
+            width: 300px;
+            height: 300px;
+            top: -50px;
+            left: -100px;
+            background: radial-gradient(circle at 30% 40%, rgba(122, 184, 143, 0.3), rgba(122, 184, 143, 0.1));
+            animation: abstractBlob 8s ease-in-out infinite;
+        }
+
+        .blob-2 {
+            width: 250px;
+            height: 250px;
+            bottom: 30%;
+            right: -80px;
+            background: radial-gradient(circle at 40% 30%, rgba(168, 213, 184, 0.25), rgba(168, 213, 184, 0.05));
+            animation: abstractBlob 10s ease-in-out infinite 1s;
+        }
+
+        #hero {
+            position: relative;
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 1rem;
+        }
+
+        #hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(122, 184, 143, 0.05), transparent, transparent);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            margin-bottom: 1.5rem;
+            color: var(--foreground);
+        }
+
+        .hero-content > p {
+            font-size: 1.125rem;
+            color: var(--muted-foreground);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        /* Search & Filters */
+        .search-filter-section {
+            margin-bottom: 3rem;
+            animation: fadeUp 0.6s ease-out forwards;
+            position: relative;
+            z-index: 100;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background-color: var(--input);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--foreground);
+            font-family: inherit;
+        }
+
+        .search-input::placeholder {
+            color: var(--muted-foreground);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: 0.5rem 1.2rem;
+            background-color: rgba(122, 184, 143, 0.1);
+            border: 1px solid rgba(122, 184, 143, 0.3);
+            border-radius: 9999px;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filter-chip:hover {
+            background-color: rgba(122, 184, 143, 0.2);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-chip.active {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            border-color: var(--primary);
+        }
+
+        /* Fixed Dropdown Toggle CSS */
+        .filter-dropdown-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .filter-dropdown-btn {
+            width: 40px; 
+            height: 40px;
+            background-color: rgba(122, 184, 143, 0.1);
+            border: 1px solid rgba(122, 184, 143, 0.3);
+            border-radius: 50%;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .filter-dropdown-menu {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: #1e242a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            min-width: 200px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            padding: 8px 0;
+            overflow: hidden;
+        }
+
+        .filter-dropdown-menu.active {
+            display: flex;
+        }
+
+        .filter-dropdown-item {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        .filter-dropdown-item:hover {
+            background-color: rgba(122, 184, 143, 0.15);
+            color: var(--primary);
+        }
+
+        /* Blog Grid */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (min-width: 768px) {
+            .blog-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .blog-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .blog-card {
+            background: linear-gradient(135deg, rgba(122, 184, 143, 0.08) 0%, rgba(168, 213, 184, 0.04) 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(122, 184, 143, 0.1);
+            display: block;
+            animation: fadeUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .blog-card.hidden {
+            display: none;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(122, 184, 143, 0.4);
+            box-shadow: 0 0 30px rgba(122, 184, 143, 0.2);
+        }
+
+        .blog-card h3 {
+            margin-bottom: 1rem;
+            color: var(--foreground);
+            transition: color 0.3s ease;
+        }
+
+        .blog-card:hover h3 {
+            color: var(--primary);
+        }
+
+        .blog-card p {
+            color: var(--muted-foreground);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .blog-meta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            margin-bottom: 1rem;
+        }
+
+        .blog-category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(122, 184, 143, 0.2);
+            color: var(--primary);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .read-more {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .blog-card:hover .read-more {
+            transform: translateX(4px);
+        }
+
+        footer {
+            background-color: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                text-align: left;
+            }
+        }
+
+        .footer-text {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .b12-link {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .b12-link a {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="hero-logo">
+                <div class="logo-box">CS</div>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="flowgrid.html">FlowGrid</a></li>
+                <li><a href="store.html">Store</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+            <div class="container" style="position: relative; z-index: 10;">
+                <div class="hero-content" style="animation: fadeUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s forwards; opacity: 0;">
+                    <h1>ChronoBlog</h1>
+                    <p>Insights on friction-less structure and intelligence-backed workflows. Free with email subscription, or upgrade to ChronoSquared for premium content.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="articles">
+            <div class="container">
+                <div class="search-filter-section">
+                    <div style="margin-bottom: 2rem;">
+                        <h2 style="margin-bottom: 1rem;">All Articles</h2>
+                        <p style="font-size: 1.125rem; color: var(--muted-foreground);">Explore insights on automation, productivity, and intelligent workflows.</p>
+                    </div>
+
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Search articles...">
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <p style="font-size: 0.875rem; color: var(--muted-foreground); margin-bottom: 1rem; font-weight: 600;">Filter by Tag:</p>
+                        <div class="filter-controls">
+                            <div class="filter-chips">
+                                <button class="filter-chip active" data-filter="all">All</button>
+                                <button class="filter-chip" data-filter="habits">Habits</button>
+                                <button class="filter-chip" data-filter="automation">Automation</button>
+                                <button class="filter-chip" data-filter="insights">Insights</button>
+                                <button class="filter-chip" data-filter="productivity">Productivity</button>
+                            </div>
+                            <div class="filter-dropdown-container">
+                                <button class="filter-dropdown-btn" id="filterDropdownBtn">☰</button>
+                                <div class="filter-dropdown-menu" id="filterDropdownMenu">
+                                    <button class="filter-dropdown-item" data-filter="all">All Articles</button>
+                                    <button class="filter-dropdown-item" data-filter="habits">Habits</button>
+                                    <button class="filter-dropdown-item" data-filter="automation">Automation</button>
+                                    <button class="filter-dropdown-item" data-filter="insights">Insights</button>
+                                    <button class="filter-dropdown-item" data-filter="productivity">Productivity</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="blog-grid" id="blogGrid">
+                    <a href="article-habit-tracking.html" class="blog-card" data-tag="habits" data-title="Habit Tracking That Actually Works">
+                        <div class="blog-category">Habits</div>
+                        <div class="blog-category" style="background: rgba(212, 181, 69, 0.2); color: #d4b545; margin-left: 0.5rem;">Featured</div>
+                        <h3>Habit Tracking That Actually Works</h3>
+                        <p>Discover the science behind effective habit tracking and how intelligent analytics can reveal patterns in your behavior. Build systems that stick using proven frameworks.</p>
+                        <div class="blog-meta"><span>7 min read</span><span>•</span><span>Dec 2025</span></div>
+                        <div class="read-more">Read More →</div>
+                    </a>
+
+                    <a href="article-time-management.html" class="blog-card" data-tag="productivity" data-title="The Science of Time Management">
+                        <div class="blog-category">Time Management</div>
+                        <div class="blog-category" style="background: rgba(212, 181, 69, 0.2); color: #d4b545; margin-left: 0.5rem;">Featured</div>
+                        <h3>The Science of Time Management</h3>
+                        <p>Learn how to optimize your energy and attention instead of just managing hours. Discover why alignment matters more than blocking time.</p>
+                        <div class="blog-meta"><span>8 min read</span><span>•</span><span>Jan 2026</span></div>
+                        <div class="read-more">Read More →</div>
+                    </a>
+
+                    <a href="article-data-action.html" class="blog-card" data-tag="insights" data-title="From Data to Action">
+                        <div class="blog-category">Insights</div>
+                        <h3>From Data to Action</h3>
+                        <p>Explore how ChronoSquares transforms static data into actionable insights that drive real results in your workflow.</p>
+                        <div class="blog-meta"><span>6 min read</span><span>•</span><span>Dec 2025</span></div>
+                        <div class="read-more">Read More →</div>
+                    </a>
+
+                    <a href="article-productivity-logic.html" class="blog-card" data-tag="productivity" data-title="Productivity Logic: Building Systems, Not Willpower">
+                        <div class="blog-category">Productivity</div>
+                        <div class="blog-category" style="background: rgba(212, 181, 69, 0.2); color: #d4b545; margin-left: 0.5rem;">Featured</div>
+                        <h3>Productivity Logic: Building Systems, Not Willpower</h3>
+                        <p>Explore how to replace willpower with intelligence. Learn why the most productive people have better systems.</p>
+                        <div class="blog-meta"><span>9 min read</span><span>•</span><span>Feb 2026</span></div>
+                        <div class="read-more">Read More →</div>
+                    </a>
+
+                    <a href="article-systems.html" class="blog-card" data-tag="insights" data-title="Building Systems That Last">
+                        <div class="blog-category">Insights</div>
+                        <h3>Building Systems That Last</h3>
+                        <p>Discover how to create sustainable personal and professional systems that actually stick and evolve.</p>
+                        <div class="blog-meta"><span>9 min read</span><span>•</span><span>Nov 2025</span></div>
+                        <div class="read-more">Read More →</div>
+                    </a>
+
+                    <a href="article-intelligence.html" class="blog-card" data-tag="automation" data-title="The Power of Intelligent Automation">
+                        <div class="blog-category">Automation</div>
+                        <h3>The Power of Intelligent Automation</h3>
+                        <p>Automation isn't just about speed—it's about making smarter decisions. Explore AI-backed automation.</p>
+                        <div class="blog-meta"><span>7 min read</span><span>•</span><span>Nov 2025</span></div>
+                        <div class="read-more">Read More →</div>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p class="footer-text">ChronoSquares 2026. Built for efficiency.</p>
+            <div class="b12-link"><a href="https://www.b12.io" target="_blank">Built with B12</a></div>
+        </div>
+    </footer>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const filterChips = document.querySelectorAll('.filter-chip');
+        const blogCards = document.querySelectorAll('.blog-card');
+        const dropdownBtn = document.getElementById('filterDropdownBtn');
+        const dropdownMenu = document.getElementById('filterDropdownMenu');
+        const dropdownItems = document.querySelectorAll('.filter-dropdown-item');
+
+        let activeFilter = 'all';
+
+        function filterBlogs() {
+            const term = searchInput.value.toLowerCase();
+            blogCards.forEach(card => {
+                const tag = card.getAttribute('data-tag');
+                const title = card.getAttribute('data-title').toLowerCase();
+                const content = card.innerText.toLowerCase();
+                
+                const matchesTag = activeFilter === 'all' || tag === activeFilter;
+                const matchesSearch = title.includes(term) || content.includes(term);
+
+                card.classList.toggle('hidden', !(matchesTag && matchesSearch));
+            });
+        }
+
+        // Dropdown toggle
+        dropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', () => dropdownMenu.classList.remove('active'));
+
+        function updateFilters(filter) {
+            activeFilter = filter;
+            filterChips.forEach(c => c.classList.toggle('active', c.dataset.filter === filter));
+            filterBlogs();
+        }
+
+        filterChips.forEach(chip => chip.addEventListener('click', () => updateFilters(chip.dataset.filter)));
+        dropdownItems.forEach(item => item.addEventListener('click', () => {
+            updateFilters(item.dataset.filter);
+            dropdownMenu.classList.remove('active');
+        }));
+
+        searchInput.addEventListener('input', filterBlogs);
+        
+        // Mobile Nav
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

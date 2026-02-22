@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChronoSquares - Control Room for Your Life</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: #0f1419;
+            --foreground: #f5f5f5;
+            --card: #1a1f25;
+            --card-foreground: #f5f5f5;
+            --primary: #7ba88f;
+            --primary-foreground: #0f1419;
+            --secondary: #a8d5b8;
+            --secondary-foreground: #0f1419;
+            --muted: #4d5a54;
+            --muted-foreground: #a6a6a6;
+            --border: #333a3f;
+            --input: #242c33;
+            --sage-dark: #5a8570;
+            --yellow: #d4b545;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: 'IBM Plex Sans', sans-serif;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: clamp(1.75rem, 6vw, 2.5rem);
+            line-height: 1.2;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(28, 28, 28, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hero-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4rem;
+        }
+
+        .hero-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-box {
+            width: 40px;
+            height: 40px;
+            background: rgba(122, 184, 143, 0.2);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: none;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+            }
+        }
+
+        .nav-links a {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 6px;
+            background: none;
+            border: none;
+            padding: 0.5rem;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background-color: var(--foreground);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(10px, 10px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        @media (max-width: 767px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background-color: rgba(28, 28, 28, 0.98);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                gap: 1rem;
+                padding: 2rem 1.5rem;
+                border-bottom: 1px solid var(--border);
+                display: none !important;
+                max-height: 0;
+                overflow: hidden;
+            }
+
+            .nav-links.active {
+                display: flex !important;
+                max-height: 500px;
+            }
+        }
+        /* Main content */
+        main {
+            min-height: 100vh;
+        }
+
+        section {
+            padding: 5rem 1rem;
+        }
+
+        @media (min-width: 768px) {
+            section {
+                padding: 6rem 1.5rem;
+            }
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        #hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(101, 204, 255, 0.05), transparent, transparent);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        @media (min-width: 1024px) {
+            .hero-content {
+                grid-template-columns: 1fr 1fr;
+                gap: 5rem;
+            }
+        }
+
+        .hero-text h1 {
+            margin-bottom: 1.5rem;
+            color: var(--foreground);
+        }
+
+        .hero-text h1 .highlight {
+            color: var(--primary);
+        }
+
+        .hero-text p {
+            font-size: 1.125rem;
+            color: var(--muted-foreground);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .hero-text .status {
+            font-size: 0.875rem;
+            color: var(--secondary);
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 20px rgba(122, 184, 143, 0.5);
+            transform: scale(1.05);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .grid-bg {
+            position: relative;
+            display: none;
+            min-height: 400px;
+        }
+
+        @media (min-width: 1024px) {
+            .grid-bg {
+                display: block;
+            }
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            filter: blur(40px);
+        }
+
+        .blob-1 {
+            width: 300px;
+            height: 300px;
+            top: -50px;
+            left: -100px;
+            background: radial-gradient(circle at 30% 40%, rgba(122, 184, 143, 0.3), rgba(122, 184, 143, 0.1));
+            animation: abstractBlob 8s ease-in-out infinite;
+        }
+
+        .blob-2 {
+            width: 250px;
+            height: 250px;
+            top: 50%;
+            right: -80px;
+            background: radial-gradient(circle at 40% 30%, rgba(168, 213, 184, 0.25), rgba(168, 213, 184, 0.05));
+            animation: abstractBlob 10s ease-in-out infinite 1s;
+        }
+
+        .blob-3 {
+            width: 200px;
+            height: 200px;
+            bottom: -30px;
+            left: 30%;
+            background: radial-gradient(circle at 50% 50%, rgba(122, 184, 143, 0.2), transparent);
+            animation: abstractBlob 12s ease-in-out infinite 2s;
+        }
+
+        .grid-content {
+            position: relative;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            padding: 2rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out 0.3s forwards;
+        }
+
+        @media (max-width: 768px) {
+            .grid-content {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 1rem;
+            }
+        }
+
+        .grid-item {
+            background: rgba(122, 184, 143, 0.05);
+            border: 1px solid rgba(122, 184, 143, 0.15);
+            border-radius: 12px;
+            aspect-ratio: 1;
+            opacity: 0.6;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .grid-item:hover {
+            background: rgba(122, 184, 143, 0.12);
+            border-color: rgba(122, 184, 143, 0.4);
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) translateX(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) translateX(0);
+            }
+        }
+
+        @keyframes abstractBlob {
+            0% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+                transform: rotate(0deg) scale(1);
+            }
+            50% {
+                border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+                transform: rotate(180deg) scale(1.05);
+            }
+            100% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+                transform: rotate(360deg) scale(1);
+            }
+        }
+        #product-suite {
+            background-color: transparent;
+        }
+
+        #chronoblog {
+            background-color: transparent;
+        }
+
+        #flowgrid, #store {
+            background-color: transparent;
+        }
+
+        .suite-header {
+            margin-bottom: 4rem;
+        }
+
+        .suite-header h2 {
+            margin-bottom: 1rem;
+        }
+
+        .suite-header p {
+            font-size: 1.125rem;
+            color: var(--muted-foreground);
+            max-width: 42rem;
+        }
+
+        .suite-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            animation: fadeUp 0.6s ease-out 0.1s forwards;
+        }
+
+        @media (min-width: 768px) {
+            .suite-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .suite-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .suite-card {
+            background: linear-gradient(135deg, rgba(122, 184, 143, 0.08) 0%, rgba(168, 213, 184, 0.04) 100%);
+            border: none;
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: visible;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .suite-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, rgba(122, 184, 143, 0.2), rgba(168, 213, 184, 0.1));
+            border-radius: 20px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .suite-card:hover::before {
+            opacity: 1;
+        }
+
+        .suite-card:hover {
+            transform: translateY(-6px);
+            filter: brightness(1.1);
+            box-shadow: 0 0 30px rgba(122, 184, 143, 0.2), 0 0 60px rgba(122, 184, 143, 0.1);
+        }
+
+        .suite-card h3 {
+            color: var(--foreground);
+            margin-bottom: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .suite-card:hover h3 {
+            color: var(--primary);
+        }
+
+        .tier {
+            border-top: 1px solid rgba(64, 64, 64, 0.5);
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .tier:first-child {
+            border-top: none;
+            padding-top: 0;
+            margin-top: 0;
+        }
+
+        .tier-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .tier-features {
+            list-style: none;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .tier-features li {
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .tier-features li span {
+            color: var(--primary);
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+
+        .tier-features li {
+            transition: color 0.3s ease;
+        }
+
+        .tier-features li:hover {
+            color: var(--primary);
+        }
+
+        /* Featured Articles Section */
+        .featured-articles-header {
+            margin-bottom: 3rem;
+        }
+
+        .featured-articles-header h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .featured-articles-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .featured-articles-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .article-card {
+            background: linear-gradient(135deg, rgba(122, 184, 143, 0.08) 0%, rgba(168, 213, 184, 0.04) 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(122, 184, 143, 0.1);
+            display: block;
+            animation: fadeUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+        }
+
+        .article-card:nth-child(1) { animation-delay: 0.15s; }
+        .article-card:nth-child(2) { animation-delay: 0.20s; }
+        .article-card:nth-child(3) { animation-delay: 0.25s; }
+
+        .article-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(122, 184, 143, 0.4);
+            box-shadow: 0 0 30px rgba(122, 184, 143, 0.2);
+        }
+
+        .article-card h3 {
+            margin-bottom: 1rem;
+            color: var(--foreground);
+            transition: color 0.3s ease;
+        }
+
+        .article-card:hover h3 {
+            color: var(--primary);
+        }
+
+        .article-card p {
+            color: var(--muted-foreground);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .blog-category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(122, 184, 143, 0.2);
+            color: var(--primary);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .read-more {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .article-card:hover .read-more {
+            transform: translateX(4px);
+        }
+
+        /* FlowGrid & Store Sections */
+        .flowgrid-card, .store-card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .flowgrid-card, .store-card {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+                align-items: center;
+            }
+        }
+
+        .flowgrid-content h2, .store-content h2 {
+            margin-bottom: 1rem;
+        }
+
+        .flowgrid-content h3, .store-content h3 {
+            font-size: 1.25rem;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .flowgrid-content p, .store-content p {
+            color: var(--muted-foreground);
+            line-height: 1.8;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: rgba(212, 181, 69, 0.2);
+            color: var(--secondary);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .service-label {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                text-align: left;
+            }
+        }
+
+        .footer-text {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .b12-link {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .b12-link a {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        .b12-link a:hover {
+            color: rgba(122, 184, 143, 0.8);
+        }
+
+        /* Subscription Section Styles */
+        .subscription-section {
+            background: linear-gradient(135deg, rgba(122, 184, 143, 0.05) 0%, rgba(168, 213, 184, 0.03) 100%);
+            border-top: 1px solid var(--border);
+        }
+
+        .subscription-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .subscription-header h2 {
+            margin-bottom: 1rem;
+        }
+
+        .subscription-header p {
+            font-size: 1.125rem;
+            color: var(--muted-foreground);
+            margin-bottom: 2rem;
+        }
+
+        .billing-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .toggle-button {
+            background: var(--input);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1.5rem;
+            border-radius: 999px;
+            cursor: pointer;
+            color: var(--foreground);
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .toggle-button.active {
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border-color: var(--primary);
+        }
+
+        .toggle-button:hover {
+            border-color: var(--primary);
+        }
+
+        .savings-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(212, 181, 69, 0.15);
+            color: var(--yellow);
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .subscription-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .tier-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tier-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 24px rgba(122, 184, 143, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .tier-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--foreground);
+        }
+
+        .tier-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .tier-period {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            margin-bottom: 1.5rem;
+        }
+
+        .tier-description {
+            color: var(--muted-foreground);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .coming-soon-badge {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-align: center;
+            width: 100%;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .coming-soon-badge:hover {
+            box-shadow: 0 0 20px rgba(122, 184, 143, 0.5);
+            transform: scale(1.05);
+        }
+
+        .coming-soon-badge:active {
+            transform: scale(0.95);
+        }
+
+        /* Email Gate Modal Styles */
+        .email-gate-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 20, 25, 0.95);
+            backdrop-filter: blur(12px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .email-gate-overlay.active {
+            display: flex;
+        }
+
+        .email-gate-modal {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            padding: 3rem 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .email-gate-modal h2 {
+            margin-bottom: 1rem;
+            font-size: 1.75rem;
+        }
+
+        .email-gate-modal p {
+            color: var(--muted-foreground);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .email-gate-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .email-gate-input {
+            padding: 0.75rem 1rem;
+            background: var(--input);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--foreground);
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .email-gate-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(122, 184, 143, 0.05);
+        }
+
+        .email-gate-submit {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .email-gate-submit:hover {
+            background: rgba(122, 184, 143, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .email-gate-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--muted-foreground);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .email-gate-close:hover {
+            color: var(--foreground);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="hero-logo">
+                <div class="logo-box">CS</div>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#product-suite">The 7 Squares</a></li>
+                <li><a href="#flowgrid">FlowGrid</a></li>
+                <li><a href="chronoblog.html">ChronoBlog</a></li>
+                <li><a href="store.html">Store</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1>Own your hours, <span class="highlight">square them up</span>.</h1>
+                        <p>ChronoSquares is a library of high-performance Notion templates and n8n automation workflows that turn static data into active results. We don't just give you a place to write things down; we provide the logic that prioritizes your day, tracks your habits automatically, and alerts you when your finances or projects go off-track.</p>
+                        <p class="status">All systems are coming soon. Built for efficiency.</p>
+                        <a href="#product-suite" class="btn">Explore the 7 Squares</a>
+                    </div>
+                    <div class="grid-bg">
+                        <div class="blob blob-1"></div>
+                        <div class="blob blob-2"></div>
+                        <div class="blob blob-3"></div>
+                        <div class="grid-content">
+                            <div class="grid-item"></div>
+                            <div class="grid-item"></div>
+                            <div class="grid-item"></div>
+                            <div class="grid-item"></div>
+                            <div class="grid-item"></div>
+                            <div class="grid-item"></div>
+                            <div class="grid-item"></div>
+                            <div class="grid-item"></div>
+                            <div class="grid-item"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The 7 Squares Section -->
+       <section id="product-suite">
+            <div class="container">
+                <div class="suite-header" style="animation: fadeUp 0.6s ease-out forwards;">
+                    <h2>The Product Suite</h2>
+                    <p>Seven interconnected systems to automate your life and work, from habit tracking to financial intelligence.</p>
+                </div>
+
+                <div class="suite-grid">
+                    <a href="product-life-os.html" class="suite-card" style="text-decoration: none; color: inherit; animation-delay: 0.15s;">
+                        <h3>ChronoSquares Life OS</h3>
+                        <div class="tier">
+                            <div class="tier-label">Free Core</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>Daily Journal</span></li>
+                                <li><span>▪</span> <span>Media Tracker</span></li>
+                                <li><span>▪</span> <span>Habit/Task Tracking</span></li>
+                            </ul>
+                        </div>
+                        <div class="tier">
+                            <div class="tier-label">Add-ons</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>AI Curated Feed</span></li>
+                                <li><span>▪</span> <span>n8n Workflows</span></li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <a href="product-habit-intelligence.html" class="suite-card" style="text-decoration: none; color: inherit; animation-delay: 0.20s;">
+                        <h3>Habit Intelligence Suite</h3>
+                        <div class="tier">
+                            <div class="tier-label">Free</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>Habit Tracker</span></li>
+                                <li><span>▪</span> <span>Daily Log</span></li>
+                            </ul>
+                        </div>
+                        <div class="tier">
+                            <div class="tier-label">Core</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>Analytics</span></li>
+                                <li><span>▪</span> <span>Trend Views</span></li>
+                            </ul>
+                        </div>
+                        <div class="tier">
+                            <div class="tier-label">Premium</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>Automated Alerts</span></li>
+                                <li><span>▪</span> <span>n8n Automations</span></li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <a href="product-task-intelligence.html" class="suite-card" style="text-decoration: none; color: inherit; animation-delay: 0.25s;">
+                        <h3>Task Intelligence Suite</h3>
+                        <div class="tier">
+                            <div class="tier-label">Free</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>Daily Tasks</span></li>
+                            </ul>
+                        </div>
+                        <div class="tier">
+                            <div class="tier-label">Core</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>CR Currency</span></li>
+                                <li><span>▪</span> <span>Reward Store</span></li>
+                            </ul>
+                        </div>
+                        <div class="tier">
+                            <div class="tier-label">Premium</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>AI Prioritization</span></li>
+                                <li><span>▪</span> <span>Adaptive Rewards</span></li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <a href="product-gamification.html" class="suite-card" style="text-decoration: none; color: inherit; animation-delay: 0.30s;">
+                        <h3>Gamification Suite</h3>
+                        <div class="tier">
+                            <div class="tier-label">Entry</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>Quests</span></li>
+                                <li><span>▪</span> <span>Leveling</span></li>
+                            </ul>
+                        </div>
+                        <div class="tier">
+                            <div class="tier-label">Core</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>XP System</span></li>
+                                <li><span>▪</span> <span>Radar Diagrams</span></li>
+                            </ul>
+                        </div>
+                        <div class="tier">
+                            <div class="tier-label">Premium</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>Skill Trees</span></li>
+                                <li><span>▪</span> <span>AI XP Suggestions</span></li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <a href="product-creator-os.html" class="suite-card" style="text-decoration: none; color: inherit; animation-delay: 0.35s;">
+                        <h3>Creator OS Suite</h3>
+                        <div class="tier">
+                            <div class="tier-label">Free</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>Content Tracker</span></li>
+                            </ul>
+                        </div>
+                        <div class="tier">
+                            <div class="tier-label">Core</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>Performance Analytics</span></li>
+                            </ul>
+                        </div>
+                        <div class="tier">
+                            <div class="tier-label">Premium</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>AI Content Ideas</span></li>
+                                <li><span>▪</span> <span>Auto Repurposing</span></li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <a href="product-finance-os.html" class="suite-card" style="text-decoration: none; color: inherit; animation-delay: 0.40s;">
+                        <h3>Finance OS Suite</h3>
+                        <div class="tier">
+                            <div class="tier-label">Free</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>Transaction Database</span></li>
+                            </ul>
+                        </div>
+                        <div class="tier">
+                            <div class="tier-label">Core</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>Budgeting</span></li>
+                                <li><span>▪</span> <span>Cash Flow</span></li>
+                            </ul>
+                        </div>
+                        <div class="tier">
+                            <div class="tier-label">Premium</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>Automated Imports</span></li>
+                                <li><span>▪</span> <span>AI Insights</span></li>
+                            </ul>
+                        </div>
+                    </a>
+
+                    <a href="product-workflow-builder.html" class="suite-card" style="text-decoration: none; color: inherit; animation-delay: 0.45s;">
+                        <h3>Workflow Builder Suite</h3>
+                        <div class="tier">
+                            <div class="tier-label">Free</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>Manual Automations</span></li>
+                            </ul>
+                        </div>
+                        <div class="tier">
+                            <div class="tier-label">Core</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>Cross-Suite Logic</span></li>
+                            </ul>
+                        </div>
+                        <div class="tier">
+                            <div class="tier-label">Premium</div>
+                            <ul class="tier-features">
+                                <li><span>▪</span> <span>AI Suggestions</span></li>
+                                <li><span>▪</span> <span>Auto Optimization</span></li>
+                            </ul>
+                        </div>
+                    </a>
+                </div>
+
+                <div style="margin-top: 6rem; animation: fadeUp 0.6s ease-out forwards;">
+                    <div class="suite-card" style="display: block;">
+                        <div style="display: flex; align-items: start; justify-content: space-between; margin-bottom: 1rem;">
+                            <div>
+                                <h3 style="font-size: 1.5rem; margin-bottom: 0.25rem;">Store</h3>
+                                <p style="color: var(--primary); font-weight: 600; font-size: 0.875rem;">Templates, automations, and suites marketplace.</p>
+                            </div>
+                            <span class="status-badge" style="white-space: nowrap; margin-left: 1rem;">Coming Soon 2026</span>
+                        </div>
+                        <p style="color: var(--muted-foreground); line-height: 1.6; margin-bottom: 1rem;">Browse and purchase high-performance Notion templates, n8n automation workflows, and complete ChronoSquares suites. All managed via Lemon Squeezy for seamless transactions.</p>
+                        <a href="store.html" style="display: inline-flex; align-items: center; color: var(--primary); font-size: 0.875rem; font-weight: 600;">
+                            Browse Store <span style="margin-left: 0.5rem;">→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FlowGrid Section -->
+        <section id="flowgrid">
+            <div class="container">
+                <div class="suite-card" style="display: block; animation: fadeUp 0.6s ease-out 0.1s forwards; opacity: 0;">
+                    <div style="display: flex; align-items: start; justify-content: space-between; margin-bottom: 1rem;">
+                        <div>
+                            <h3 style="font-size: 1.5rem; margin-bottom: 0.25rem;">FlowGrid</h3>
+                            <p style="color: var(--primary); font-weight: 600; font-size: 0.875rem;">Bespoke automated onboarding for agencies.</p>
+                        </div>
+                        <span class="status-badge" style="white-space: nowrap; margin-left: 1rem;">Coming Soon 2026</span>
+                    </div>
+                    <p style="color: var(--muted-foreground); line-height: 1.6; margin-bottom: 1rem;">FlowGrid automates the client onboarding experience for smaller agencies or individuals, turning manual setup processes into streamlined workflows.</p>
+                    <a href="flowgrid.html" style="display: inline-flex; align-items: center; color: var(--primary); font-size: 0.875rem; font-weight: 600;">
+                        Learn More <span style="margin-left: 0.5rem;">→</span>
+                    </a>
+                    <span class="service-label">A ChronoSquares Service</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured ChronoBlog Articles Section -->
+        <section id="chronoblog">
+            <div class="container">
+                <div style="animation: fadeUp 0.6s ease-out 0.1s forwards; opacity: 0;">
+                    <div class="featured-articles-header">
+                        <h2>Featured Articles</h2>
+                        <p style="font-size: 1.125rem; color: var(--muted-foreground);">Latest insights on automation and workflows from ChronoBlog.</p>
+                    </div>
+
+                    <div class="featured-articles-grid">
+                        <a href="article-habit-tracking.html" class="article-card">
+                            <div style="margin-bottom: 0.75rem;">
+                                <span class="blog-category featured">Featured</span>
+                            </div>
+                            <h3>Habit Tracking That Actually Works</h3>
+                            <p>Discover the science behind effective habit tracking and how intelligent analytics can reveal patterns in your behavior. Build systems that stick.</p>
+                            <div class="read-more">Read More <span style="margin-left: 0.5rem;">→</span></div>
+                        </a>
+
+                        <a href="article-time-management.html" class="article-card">
+                            <div style="margin-bottom: 0.75rem;">
+                                <span class="blog-category featured">Featured</span>
+                            </div>
+                            <h3>The Science of Time Management</h3>
+                            <p>Learn how to optimize your energy and attention instead of just managing hours. Discover why alignment matters more than blocking time.</p>
+                            <div class="read-more">Read More <span style="margin-left: 0.5rem;">→</span></div>
+                        </a>
+
+                        <a href="article-productivity-logic.html" class="article-card">
+                            <div style="margin-bottom: 0.75rem;">
+                                <span class="blog-category featured">Featured</span>
+                            </div>
+                            <h3>Productivity Logic: Building Systems, Not Willpower</h3>
+                            <p>Explore how to replace willpower with intelligence. Learn why the most productive people have better systems, not stronger determination.</p>
+                            <div class="read-more">Read More <span style="margin-left: 0.5rem;">→</span></div>
+                        </a>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <a href="chronoblog.html" class="btn">View All Articles</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Subscription Section -->
+        <section id="subscription" class="subscription-section">
+            <div class="container">
+                <div style="animation: fadeUp 0.6s ease-out 0.1s forwards; opacity: 0;">
+                    <div class="subscription-header">
+                        <h2>ChronoSquares Subscription</h2>
+                        <p>Get premium access to advanced features and exclusive content.</p>
+
+                        <div class="billing-toggle">
+                            <button class="toggle-button active" data-period="monthly">Monthly</button>
+                            <button class="toggle-button" data-period="yearly">Yearly</button>
+                            <span class="savings-badge" id="savingsBadge" style="display: none;">Save up to 20%</span>
+                        </div>
+                    </div>
+
+                    <div class="subscription-grid">
+                        <!-- Tier 1 -->
+                        <div class="tier-card">
+                            <div class="tier-name">Starter</div>
+                            <div class="tier-price" id="tier1-price">Coming Soon</div>
+                            <div class="tier-period">Monthly subscription</div>
+                            <div class="tier-description">
+                                Essential features to get started with intelligent automation.
+                            </div>
+                            <button class="coming-soon-badge">Coming Soon</button>
+                        </div>
+
+                        <!-- Tier 2 -->
+                        <div class="tier-card">
+                            <div class="tier-name">Pro</div>
+                            <div class="tier-price" id="tier2-price">Coming Soon</div>
+                            <div class="tier-period">Monthly subscription</div>
+                            <div class="tier-description">
+                                Advanced analytics and automation capabilities for power users.
+                            </div>
+                            <button class="coming-soon-badge">Coming Soon</button>
+                        </div>
+
+                        <!-- Tier 3 -->
+                        <div class="tier-card">
+                            <div class="tier-name">Enterprise</div>
+                            <div class="tier-price" id="tier3-price">Coming Soon</div>
+                            <div class="tier-period">Monthly subscription</div>
+                            <div class="tier-description">
+                                Custom solutions with priority support and team collaboration.
+                            </div>
+                            <button class="coming-soon-badge">Coming Soon</button>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 3rem;">
+                        <p style="color: var(--muted-foreground); font-size: 0.875rem;">
+                            Detailed pricing and features coming soon. Stay tuned for more details.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Email Gate Modal -->
+    <div class="email-gate-overlay" id="emailGateOverlay">
+        <div class="email-gate-modal">
+            <button class="email-gate-close" id="emailGateClose">✕</button>
+            <h2>Join our community</h2>
+            <p>Get exclusive insights, early access to new features, and productivity tips delivered straight to your inbox.</p>
+            <form class="email-gate-form" id="emailGateForm">
+                <input
+                    type="email"
+                    class="email-gate-input"
+                    placeholder="your@email.com"
+                    required
+                >
+                <button type="submit" class="email-gate-submit">Continue Reading</button>
+            </form>
+            <p style="font-size: 0.75rem; color: var(--muted-foreground);">
+                We respect your privacy. Unsubscribe at any time.
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p class="footer-text">ChronoSquares 2026. Built for efficiency.</p>
+            <div class="b12-link">
+                <a href="https://www.b12.io" target="_blank">Built with B12</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Hamburger menu functionality
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close menu when a link is clicked
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Email Gate functionality - appears after 3rd article is accessed
+        const emailGateOverlay = document.getElementById('emailGateOverlay');
+        const emailGateClose = document.getElementById('emailGateClose');
+        const emailGateForm = document.getElementById('emailGateForm');
+
+        // Track article access
+        let articlesViewed = parseInt(localStorage.getItem('articlesViewed') || '0');
+        const featuredArticleLinks = document.querySelectorAll('.featured-articles-grid a');
+
+        featuredArticleLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                // Increment counter
+                articlesViewed++;
+                localStorage.setItem('articlesViewed', articlesViewed);
+
+                // Show email gate on 3rd article
+                if (articlesViewed === 3) {
+                    e.preventDefault();
+                    emailGateOverlay.classList.add('active');
+                }
+            });
+        });
+
+        emailGateClose.addEventListener('click', () => {
+            emailGateOverlay.classList.remove('active');
+        });
+
+        emailGateForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // In production, this would submit to your email service
+            localStorage.setItem('emailSubscribed', 'true');
+            emailGateOverlay.classList.remove('active');
+            // Optionally redirect to the article
+            const currentArticle = featuredArticleLinks[2]?.getAttribute('href');
+            if (currentArticle) {
+                window.location.href = currentArticle;
+            }
+        });
+
+        // Subscription billing toggle
+        const billingToggleButtons = document.querySelectorAll('.toggle-button');
+        const savingsBadge = document.getElementById('savingsBadge');
+
+        billingToggleButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                billingToggleButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+
+                const period = button.getAttribute('data-period');
+
+                // Update tier cards period
+                const tierCards = document.querySelectorAll('.tier-card');
+                tierCards.forEach(card => {
+                    const periodElement = card.querySelector('.tier-period');
+                    if (period === 'yearly') {
+                        periodElement.textContent = 'Yearly subscription';
+                        savingsBadge.style.display = 'inline-block';
+                    } else {
+                        periodElement.textContent = 'Monthly subscription';
+                        savingsBadge.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

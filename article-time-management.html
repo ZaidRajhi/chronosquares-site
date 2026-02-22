@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Science of Time Management - ChronoBlog</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: #0f1419;
+            --foreground: #f5f5f5;
+            --card: #1a1f25;
+            --primary: #7ba88f;
+            --muted-foreground: #a6a6a6;
+            --border: #333a3f;
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: 'IBM Plex Sans', sans-serif;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 { font-size: 2.5rem; line-height: 1.2; }
+        h2 { font-size: 1.75rem; }
+        h3 { font-size: 1.25rem; }
+
+        a { color: inherit; text-decoration: none; }
+        a:hover { color: var(--primary); }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(28, 28, 28, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-box {
+            width: 40px;
+            height: 40px;
+            background: rgba(122, 184, 143, 0.2);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: none;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links { display: flex; }
+        }
+
+        .nav-links a {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 6px;
+            background: none;
+            border: none;
+            padding: 0.5rem;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background-color: var(--foreground);
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 767px) {
+            .hamburger { display: flex; }
+            .nav-links { display: none !important; }
+            .nav-links.active { display: flex !important; }
+        }
+
+        main { min-height: 100vh; }
+        section { padding: 5rem 1rem; }
+
+        @media (min-width: 768px) {
+            section { padding: 6rem 1.5rem; }
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            margin-top: 1rem;
+        }
+
+        .article-category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(122, 184, 143, 0.2);
+            color: var(--primary);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .article-content {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: var(--muted-foreground);
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content h2 {
+            margin-top: 2rem;
+            color: var(--foreground);
+        }
+
+        .article-content ul {
+            margin: 1rem 0 1rem 2rem;
+            list-style: disc;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+            color: var(--muted-foreground);
+        }
+
+        footer {
+            background-color: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        @media (max-width: 767px) {
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        .back-link {
+            color: var(--primary);
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-box">CS</div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="chronoblog.html">Blog</a></li>
+                <li><a href="store.html">Store</a></li>
+            </ul>
+            <button class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <div class="container">
+                <a href="chronoblog.html" class="back-link">← Back to Blog</a>
+
+                <article>
+                    <div class="article-header">
+                        <span class="article-category">Time Management</span>
+                        <h1>The Science of Time Management</h1>
+                        <div class="article-meta">
+                            <span>8 min read</span>
+                            <span>•</span>
+                            <span>January 10, 2026</span>
+                        </div>
+                    </div>
+
+                    <div class="article-content">
+                        <p>
+                            Time is the one resource you cannot create more of. Yet most people treat their hours like an infinite commodity, wondering where each day went. The solution isn't working faster—it's working smarter. In this article, we explore how ChronoSquares applies intelligence to time management, transforming how you allocate your most precious resource.
+                        </p>
+
+                        <h2>The Myth of Time Management</h2>
+                        <p>
+                            The term "time management" is misleading. You cannot manage time—it passes at a constant rate regardless of your efforts. What you can actually manage is your attention and energy. Yet most productivity systems focus on squeezing more tasks into fewer hours, leading to burnout and diminishing returns.
+                        </p>
+                        <p>
+                            The real question isn't "How do I fit more in?" but rather "What should I focus on, and when should I do it?" This distinction changes everything.
+                        </p>
+
+                        <h2>Energy Alignment Over Time Blocking</h2>
+                        <p>
+                            Traditional time management prescribes rigid schedules: "Block 9-10 AM for email, 10-12 PM for deep work." This approach ignores a critical biological reality: your cognitive performance fluctuates throughout the day.
+                        </p>
+                        <p>
+                            ChronoSquares takes a different approach by mapping your natural energy patterns and aligning your most important work with your peak performance windows. Instead of forcing deep work during your natural dip, you schedule it when your mind is sharpest.
+                        </p>
+                        <ul>
+                            <li><strong>Peak hours</strong>: Reserve for high-leverage, creative work that requires full cognitive capacity</li>
+                            <li><strong>Normal hours</strong>: Delegate to routine tasks and collaborative work</li>
+                            <li><strong>Low-energy windows</strong>: Use for administrative work, communication, and recovery</li>
+                        </ul>
+
+                        <h2>The Cost of Context Switching</h2>
+                        <p>
+                            Research shows that switching between tasks costs far more than the time it takes to switch. Each context switch depletes your cognitive resources, requiring 15-25 minutes to regain full focus. For a typical 8-hour day with frequent interruptions, you might lose 2-3 hours of productive capacity just to task-switching friction.
+                        </p>
+                        <p>
+                            By batching similar work and protecting focus time, ChronoSquares helps you avoid this hidden cost. Instead of constant switching, you work in meaningful blocks where momentum builds naturally.
+                        </p>
+
+                        <h2>Friction Is a Feature, Not a Bug</h2>
+                        <p>
+                            The best time management systems don't eliminate friction—they make friction meaningful. When starting a task requires intentionality, you're less likely to begin something you don't truly need to do. Conversely, when you've decided something matters, you want minimal friction between decision and action.
+                        </p>
+                        <p>
+                            ChronoSquares builds this principle into its system. Important work gets smooth access. Distractions have built-in delays. The result is that your actual behavior aligns with your stated priorities.
+                        </p>
+
+                        <h2>The Weekly Review: Your Most Powerful Tool</h2>
+                        <p>
+                            No time management system works without reflection. The weekly review is where you step back from the day-to-day and ask: "What worked? What didn't? Where did my time actually go?" This isn't punishment—it's calibration.
+                        </p>
+                        <p>
+                            By tracking how you spent each hour and correlating it with your outcomes, you build a personal dataset about your own productivity patterns. Over time, this reveals truths that no productivity guru can tell you, because they're specific to your biology, values, and circumstances.
+                        </p>
+
+                        <h2>Making Time Work for You</h2>
+                        <p>
+                            The shift from managing time to managing attention is the key to sustainable productivity. You'll never have enough hours to do everything, so the goal isn't having more time—it's using what you have with intention.
+                        </p>
+                        <p>
+                            Start by tracking how you actually spend your time, not how you think you do. The gap between these two is where freedom lives. Once you see the pattern, you can redesign it. That's when time becomes your advantage instead of your constraint.
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p class="footer-text">ChronoSquares 2026. Built for efficiency.</p>
+            <a href="https://www.b12.io" target="_blank" class="footer-text" style="color: var(--primary); text-decoration: underline;">Built with B12</a>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

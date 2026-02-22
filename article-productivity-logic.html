@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productivity Logic: Building Systems, Not Willpower - ChronoBlog</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: #0f1419;
+            --foreground: #f5f5f5;
+            --card: #1a1f25;
+            --primary: #7ba88f;
+            --muted-foreground: #a6a6a6;
+            --border: #333a3f;
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: 'IBM Plex Sans', sans-serif;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 { font-size: 2.5rem; line-height: 1.2; }
+        h2 { font-size: 1.75rem; }
+        h3 { font-size: 1.25rem; }
+
+        a { color: inherit; text-decoration: none; }
+        a:hover { color: var(--primary); }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(28, 28, 28, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-box {
+            width: 40px;
+            height: 40px;
+            background: rgba(122, 184, 143, 0.2);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: none;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links { display: flex; }
+        }
+
+        .nav-links a {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 6px;
+            background: none;
+            border: none;
+            padding: 0.5rem;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background-color: var(--foreground);
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 767px) {
+            .hamburger { display: flex; }
+            .nav-links { display: none !important; }
+            .nav-links.active { display: flex !important; }
+        }
+
+        main { min-height: 100vh; }
+        section { padding: 5rem 1rem; }
+
+        @media (min-width: 768px) {
+            section { padding: 6rem 1.5rem; }
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            margin-top: 1rem;
+        }
+
+        .article-category {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(122, 184, 143, 0.2);
+            color: var(--primary);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .article-content {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: var(--muted-foreground);
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content h2 {
+            margin-top: 2rem;
+            color: var(--foreground);
+        }
+
+        .article-content ul {
+            margin: 1rem 0 1rem 2rem;
+            list-style: disc;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+            color: var(--muted-foreground);
+        }
+
+        footer {
+            background-color: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        @media (max-width: 767px) {
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        .back-link {
+            color: var(--primary);
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-box">CS</div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="chronoblog.html">Blog</a></li>
+                <li><a href="store.html">Store</a></li>
+            </ul>
+            <button class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <div class="container">
+                <a href="chronoblog.html" class="back-link">← Back to Blog</a>
+
+                <article>
+                    <div class="article-header">
+                        <span class="article-category">Productivity</span>
+                        <h1>Productivity Logic: Building Systems, Not Willpower</h1>
+                        <div class="article-meta">
+                            <span>9 min read</span>
+                            <span>•</span>
+                            <span>February 1, 2026</span>
+                        </div>
+                    </div>
+
+                    <div class="article-content">
+                        <p>
+                            Willpower is a finite resource. Every decision depletes it, whether you're resisting distractions, prioritizing tasks, or maintaining focus. The most productive people don't have more willpower—they have better systems that require less willpower. In this article, we explore how ChronoSquares applies automation and intelligence to replace willpower with logic.
+                        </p>
+
+                        <h2>The Willpower Myth</h2>
+                        <p>
+                            We celebrate stories of people who "just push harder" and accomplish remarkable things through sheer determination. These narratives are inspiring but misleading. Research consistently shows that willpower-dependent strategies are fragile. The moment you're tired, stressed, or distracted, your willpower fails, and you revert to default behaviors.
+                        </p>
+                        <p>
+                            The alternative isn't more willpower—it's eliminating the need for willpower through better system design. When your environment and tools are aligned with your goals, the right action becomes the easiest action.
+                        </p>
+
+                        <h2>Three Types of Productivity Problems</h2>
+                        <p>
+                            Understanding what kind of productivity problem you have determines the right solution:
+                        </p>
+                        <ul>
+                            <li><strong>Priority Problem</strong>: You don't know what to do first. Solution: Intelligence to rank tasks by impact.</li>
+                            <li><strong>Clarity Problem</strong>: You know what to do but lack specifics. Solution: Automation to reduce decision friction.</li>
+                            <li><strong>Friction Problem</strong>: You know what to do and how, but it's hard to start. Solution: Environment design to make it easy.</li>
+                        </ul>
+                        <p>
+                            Most productivity systems address one or two of these. ChronoSquares is designed to address all three simultaneously.
+                        </p>
+
+                        <h2>From Reactive to Proactive</h2>
+                        <p>
+                            A typical day involves constant reaction: emails arrive, notifications ping, unexpected requests land in your lap. Without a system, you respond to whatever demands the most immediate attention, which is rarely what matters most.
+                        </p>
+                        <p>
+                            Intelligence-driven systems reverse this. Instead of reacting to what's urgent, you're guided toward what's important. The system learns your patterns and goals, then surfaces relevant tasks at optimal moments.
+                        </p>
+                        <p>
+                            For example, a routine task might normally interrupt your deep work. But if your system knows you're in a focus window, it queues the task for later. When your energy dips in the afternoon, it reminds you of that queued task—the perfect time to handle it.
+                        </p>
+
+                        <h2>The Power of Constraints</h2>
+                        <p>
+                            Constraints are often seen as limitations, but they're actually some of the most powerful productivity tools. When you constrain your options, you reduce decision fatigue and create focus.
+                        </p>
+                        <p>
+                            Consider email. Without constraints, it's an endless source of distraction. But if you check email only at specific times, your system isn't fighting your willpower—it's working with your environment to make focus the natural state.
+                        </p>
+                        <p>
+                            Similarly, by limiting your daily goal to three key results instead of ten arbitrary tasks, you force yourself to choose what matters. This isn't restrictive—it's liberating. You know exactly what success looks like.
+                        </p>
+
+                        <h2>Closing the Knowing-Doing Gap</h2>
+                        <p>
+                            Everyone knows they should exercise, drink water, and get enough sleep. Yet most don't. This isn't a knowledge problem—it's a system problem. Knowing isn't doing.
+                        </p>
+                        <p>
+                            ChronoSquares bridges this gap by automating the translation from intention to action. You don't need to remember to log your habits—the system reminds you and tracks them. You don't need to wonder what to work on next—the system prioritizes it. You don't need to struggle with procrastination—the system removes friction.
+                        </p>
+
+                        <h2>Building Your System</h2>
+                        <p>
+                            The most successful people in any field share a common trait: they've built systems that work while they sleep. Athletes have training protocols. Writers have daily word count goals. Entrepreneurs have quarterly reviews.
+                        </p>
+                        <p>
+                            Your system doesn't need to be complicated. It needs to be intentional. Start by identifying your three key results. Then build around those: how do you track progress? When do you review? What gets automated? What gets constrained?
+                        </p>
+                        <p>
+                            Once you have that framework, the hard work of productivity becomes easy. You're no longer swimming against the current—you're letting the system carry you toward your goals.
+                        </p>
+
+                        <h2>The Bottom Line</h2>
+                        <p>
+                            Stop relying on willpower. It's temporary, unreliable, and exhausting. Instead, invest in building systems that make the right choices easy and the wrong choices hard. That's where real productivity lives—not in your determination, but in your design.
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p class="footer-text">ChronoSquares 2026. Built for efficiency.</p>
+            <a href="https://www.b12.io" target="_blank" class="footer-text" style="color: var(--primary); text-decoration: underline;">Built with B12</a>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
